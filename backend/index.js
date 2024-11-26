@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const errorHandler = require('./middleware/errorMiddleware');
 const authRoutes = require('./routes/authRoutes');
+const propertyRoutes = require('./routes/propertyRoutes');
 const path = require('path');
 require('./config/db');
 
@@ -13,8 +13,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(errorHandler);
 app.use('/api/auth', authRoutes);
+app.use('/api/properties', propertyRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
