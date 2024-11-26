@@ -1,38 +1,34 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-const db = require('./config/database');
-const authRoutes = require('./routes/authRoutes');
+const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const errorHandler = require('./middleware/errorMiddleware').default;
+const errorHandler = require('./middleware/errorMiddleware');
+const authRoutes = require('./routes/authRoutes');
 const path = require('path');
+require('./config/db');
 
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use('/api/auth', authRoutes);
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(errorHandler);
-
-db.authenticate()
-  .then(() => console.log('Database connected'))
-  .catch((error) => console.log('Error: ' + error));
+app.use('/api/auth', authRoutes);
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('frontend/build'));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
-  });
+  app.use(express.static(path.join(__dirname, '/frontend/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  );
 } else {
   app.get('/', (req, res) => {
-    res.send('API is running');
+    res.send('API is running....');
   });
 }
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Serve at http://localhost:${port}`);
 });
