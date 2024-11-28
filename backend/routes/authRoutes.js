@@ -9,16 +9,19 @@ const {
   loginAdmin,
   registerAdmin,
 } = require('../controllers/authController');
-const authMiddleware = require('../middleware/authMiddleware');
-const adminMiddleware = require('../middleware/adminMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
+const adminMiddleware = require('../middlewares/adminMiddleware');
 const router = express.Router();
 
+// User Routes
 router.post('/register', register);
 router.post('/login', login);
 router.get('/profile', authMiddleware, profile);
 router.put('/update', authMiddleware, updateProfile);
 router.delete('/delete', authMiddleware, deleteProfile);
-router.post('/admin/register', adminMiddleware, registerAdmin);
+
+// Admin Routes
+router.post('/admin/register', authMiddleware, adminMiddleware, registerAdmin);
 router.post('/admin/login', loginAdmin);
 
 module.exports = router;
