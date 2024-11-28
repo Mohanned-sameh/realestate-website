@@ -9,6 +9,12 @@ const ContactusSchema = new Schema(
     },
     email: {
       type: String,
+      RegExp: '^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$',
+      required: true,
+    },
+    phone: {
+      type: Number,
+      required: true,
     },
     message: {
       type: String,

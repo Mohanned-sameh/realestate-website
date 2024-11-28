@@ -5,9 +5,12 @@ const helmet = require('helmet');
 const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const db = require('./config/db');
 const path = require('path');
 
-require('./config/db');
+require('dotenv').config();
+db();
 
 const app = express();
 
@@ -18,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/contact', contactRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 if (process.env.NODE_ENV === 'production') {
