@@ -7,12 +7,12 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
     password: { type: String, required: true, minlength: 6 },
     phone: { type: String, required: true },
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
     accountType: {
       type: String,
       enum: ['admin', 'user', 'developer', 'agent', 'broker'],
       default: 'user',
     },
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
   },
   {
     timestamps: true,

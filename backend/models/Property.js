@@ -28,7 +28,7 @@ const propertySchema = new mongoose.Schema(
     images: { type: [String], default: [] },
     status: {
       type: String,
-      enum: ['available', 'sold'],
+      enum: ['available', 'sold', 'rented'],
       default: 'available',
     },
     forRent: { type: Boolean, default: false },
@@ -38,6 +38,7 @@ const propertySchema = new mongoose.Schema(
       enum: ['cash', 'installments'],
       required: true,
     },
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorite' }],
   },
   {
     timestamps: true,

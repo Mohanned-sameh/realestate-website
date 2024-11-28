@@ -1,55 +1,81 @@
 const blog = require('../models/BlogPost');
 
-exports.getBlogPosts = async (req, res) => {
+const getBlogsPosts = async (req, res) => {
   try {
-    const posts = await blog.find();
-    res.json(posts);
+    const blogs = await blog.find({});
+    res.json(blogs);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error.message);
+    res.status(500).send('Server Error');
   }
 };
 
-exports.getBlogPost = async (req, res) => {
+const getBlogPostById = async (req, res) => {
   try {
-    const post = await blog.findById(req.params.id);
-    res.json(post);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.createBlogPost = async (req, res) => {
-  const newPost = new blog(req.body);
-  try {
-    const post = await newPost.save();
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-exports.updateBlogPost = async (req, res) => {
-  try {
-    const post = await blog.findById(req.params.id);
-    if (req.body.title) {
-      post.title = req.body.title;
+    const blogPost = await blog.findById(req.params.id);
+    if (blogPost) {
+      res.json(blogPost);
+    } else {
+      res.status(404).send('Blog not found');
     }
-    if (req.body.content) {
-      post.content = req.body.content;
-    }
-    const updatedPost = await post.save();
-    res.json(updatedPost);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error.message);
+    res.status(500).send('Server Error');
   }
 };
 
-exports.deleteBlogPost = async (req, res) => {
+const createBlogPost = async (req, res) => {
   try {
-    const post = await blog.findById(req.params.id);
-    await post.remove();
-    res.json({ message: 'Post deleted successfully' });
+    const { title, content } = req.body;
+    const newBlog = new blog({
+      title,
+      content,
+    });
+    const savedBlog = await newBlog.save();
+    res.json(savedBlog);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error.message);
+    res.status(500).send('Server Error');
   }
+};
+
+const updateBlogPost = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const blogPost = await blog.findById(req.params.id);
+    if (blogPost) {
+      blogPost.title = title;
+      blogPost.content = content;
+      const updatedBlog = await blogPost.save();
+      res.json(updatedBlog);
+    } else {
+      res.status(404).send('Blog not found');
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+const deleteBlogPost = async (req, res) => {
+  try {
+    const blogPost = await blog.findById(req.params.id);
+    if (blogPost) {
+      await blogPost.remove();
+      res.json({ message: 'Blog deleted' });
+    } else {
+      res.status(404).send('Blog not found');
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+module.exports = {
+  getBlogsPosts,
+  getBlogPostById,
+  createBlogPost,
+  updateBlogPost,
+  deleteBlogPost,
 };
