@@ -1,8 +1,13 @@
 const blog = require('../models/BlogPost');
 
 const getBlogsPosts = async (req, res) => {
+  const pagination = req.query.pagination || 10;
+  const page = req.query.page || 1;
   try {
-    const blogs = await blog.find({});
+    const blogs = await blog
+      .find()
+      .limit(pagination * 1)
+      .skip((page - 1) * pagination);
     res.json(blogs);
   } catch (error) {
     console.error(error.message);

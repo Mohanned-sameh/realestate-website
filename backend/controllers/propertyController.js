@@ -3,10 +3,16 @@ const upload = require('../middleware/multerMiddleware');
 
 // Get all properties
 const getProperties = async (req, res) => {
+  const pagination = req.query.pagination || 10;
+  const page = req.query.page || 1;
+
   try {
     const properties = await Property.find()
-      .populate('developerId', 'name logo') // Populate developer details
-      .populate('propertyTypeId', 'name'); // Populate property type
+      .populate('developerId', 'name logo')
+      .populate('propertyTypeId', 'name')
+      .limit(pagination * 1)
+      .skip((page - 1) * pagination)
+      .exec();
     res.status(200).json(properties);
   } catch (err) {
     res
@@ -151,6 +157,58 @@ const deleteProperty = async (req, res) => {
     res.status(200).json({ message: 'Property deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Error deleting property', error: err });
+  }
+};
+
+const filters = async (req, res) => {
+  try {
+    const { location, minPrice, maxPrice, bedrooms, bathrooms } = req.query;
+
+    const query = {};
+
+    if (location) {
+      query.location = JSON.parse(location);
+    }
+
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) {
+        query.price.$gte = minPrice;
+      }
+      if (maxPrice) {
+        query.price.$lte = maxPrice;
+      }
+    }
+
+    if (bedrooms) {
+      query.bedrooms = bedrooms;
+    }
+
+    if (bathrooms) {
+      query.bathrooms = bathrooms;
+    }
+
+    const properties = await Property.find(query)
+      .populate('developerId', 'name logo')
+      .populate('propertyTypeId', 'name');
+
+    res.status(200).json(properties);
+  } catch (err) {
+    res.status(500).json({ message: 'Error searching properties', error: err });
+  }
+};
+
+const searchProperties = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const properties = await Property.find({
+      $text: { $search: query },
+    })
+      .populate('developerId', 'name logo')
+      .populate('propertyTypeId', 'name');
+    res.status(200).json(properties);
+  } catch (err) {
+    res.status(500).json({ message: 'Error searching properties', error: err });
   }
 };
 
