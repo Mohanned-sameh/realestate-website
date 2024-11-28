@@ -2,25 +2,30 @@ const mongoose = require('mongoose');
 
 const propertySchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    price: { type: Number, required: true },
-    location: { type: String, required: true },
-    developerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    propertyType: {
-      type: String,
-      enum: ['apartment', 'villa', 'office', 'shop'],
+    title: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
+    price: { type: Number, required: true, min: 0 },
+    location: {
+      type: {
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true },
+      },
       required: true,
     },
-    paymentMethod: {
-      type: String,
-      enum: ['cash', 'installments'],
+    developerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
-    area: { type: Number, required: true },
-    bedrooms: { type: Number, required: true },
-    bathrooms: { type: Number, required: true },
-    images: [{ type: String, default: [] }],
+    propertyTypeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'PropertyType',
+      required: true,
+    },
+    area: { type: Number, required: true, min: 0 },
+    bedrooms: { type: Number, required: true, min: 0 },
+    bathrooms: { type: Number, required: true, min: 0 },
+    images: { type: [String], default: [] },
     status: {
       type: String,
       enum: ['available', 'sold'],
@@ -28,10 +33,19 @@ const propertySchema = new mongoose.Schema(
     },
     forRent: { type: Boolean, default: false },
     forSale: { type: Boolean, default: false },
+    paymentMethod: {
+      type: String,
+      enum: ['cash', 'installments'],
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+// Adding indexes for optimized queries
+propertySchema.index({ location: 1 });
+propertySchema.index({ developerId: 1, status: 1 });
 
 module.exports = mongoose.model('Property', propertySchema);

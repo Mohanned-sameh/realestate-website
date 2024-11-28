@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 const path = require('path');
+
 require('./config/db');
 
 const app = express();
@@ -15,6 +17,7 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/properties', propertyRoutes);
+app.use('/api/blogs', blogRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));

@@ -6,14 +6,13 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
     password: { type: String, required: true, minlength: 6 },
-    accountType: {
-      type: String,
-      enum: ['admin', 'developer', 'agent', 'customer'],
-      default: 'customer',
-    },
     phone: { type: String, required: true },
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
-    status: { type: String, default: 'active' },
+    accountType: {
+      type: String,
+      enum: ['admin', 'user', 'developer', 'agent', 'broker'],
+      default: 'user',
+    },
   },
   {
     timestamps: true,
