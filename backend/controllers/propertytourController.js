@@ -44,8 +44,14 @@ const updatePropertyTourAppointment = async (req, res) => {
 const deletePropertyTourAppointment = async (req, res) => {
   try {
     const { id } = req.params;
-    await PropertyTourAppointment.findByIdAndDelete(id);
-    res.json({ message: 'Property tour appointment deleted' });
+    const propertyTourAppointment =
+      await PropertyTourAppointment.findByIdAndDelete(id);
+    if (!propertyTourAppointment) {
+      return res
+        .status(404)
+        .json({ error: 'PropertyTourAppointment not found' });
+    }
+    res.json(propertyTourAppointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
