@@ -47,6 +47,6 @@ const propertySchema = new mongoose.Schema(
 
 // Adding indexes for optimized queries
 propertySchema.index({ location: 1 });
-propertySchema.index({ developerId: 1, status: 1 });
+propertySchema.index({ userId: 1, status: 1 });
 
 module.exports = mongoose.model('Property', propertySchema);

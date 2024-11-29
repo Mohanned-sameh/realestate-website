@@ -13,6 +13,7 @@ const propertyRoutes = require('./routes/propertyRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const propertyTourRoutes = require('./routes/propertyTourRoutes');
+const favoriteRoutes = require('./routes/favoriteRoutes');
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/property-tours', propertyTourRoutes);
+app.use('/api/favorites', favoriteRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 if (process.env.NODE_ENV === 'production') {
