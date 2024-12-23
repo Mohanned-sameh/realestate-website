@@ -3,7 +3,9 @@ const router = express.Router();
 const { check } = require('express-validator');
 const authController = require('../controller/authController');
 const authMiddleware = require('../middleware/authMiddleware');
+const adminController = require('../controller/adminController');
 
+// User routes
 router.get('/user', authMiddleware, authController.getUser);
 router.post(
   '/register',
@@ -48,7 +50,41 @@ router.put(
   ],
   authController.updateUser
 );
-
 router.delete('/user', authMiddleware, authController.deleteUser);
 
+// Admin routes
+router.post(
+  '/admin/register',
+  authMiddleware,
+  [
+    check('email', 'Please include a valid email').isEmail(),
+    check(
+      'password',
+      'Please enter a password with 6 or more characters'
+    ).isLength({
+      min: 6,
+    }),
+  ],
+  authMiddleware,
+  adminController.register
+);
+
+router.post('/admin/login', adminController.login);
+
+router.put(
+  '/admin/user',
+  authMiddleware,
+  [
+    check('email', 'Please include a valid email').isEmail(),
+    check(
+      'password',
+      'Please enter a password with 6 or more characters'
+    ).isLength({
+      min: 6,
+    }),
+  ],
+  authMiddleware,
+  adminController.updateUser
+);
+router.delete('/admin/user', authMiddleware, adminController.deleteUser);
 module.exports = router;
