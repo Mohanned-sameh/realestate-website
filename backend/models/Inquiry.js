@@ -3,17 +3,12 @@ const Schema = mongoose.Schema;
 
 const InquirySchema = new Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
+    firstName: {
+      type: String,
       required: true,
     },
+    lastName: { type: String, required: true },
     message: { type: String, required: true },
-    property: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'properties',
-      required: true,
-    },
   },
   { timestamps: true }
 );
