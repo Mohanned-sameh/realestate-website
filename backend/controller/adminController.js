@@ -99,6 +99,7 @@ exports.updateRole = async (req, res) => {
       return res.status(400).json({ msg: 'Role already exists' });
     }
     const updatedRole = await Roles.findByIdAndUpdate(req.params.id, req.body);
+    await updatedRole.save();
     res.status(200).json({ msg: 'Role updated successfully' });
   } catch (error) {
     console.error(error.message);
@@ -130,6 +131,16 @@ exports.getUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password');
     res.status(200).json(users);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    res.status(200).json(user);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error');

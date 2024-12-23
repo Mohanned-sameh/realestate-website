@@ -91,13 +91,3 @@ exports.updateUser = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-
-exports.getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).select('-password');
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send('Server Error');
-  }
-};
