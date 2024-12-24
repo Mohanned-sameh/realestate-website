@@ -3,10 +3,9 @@ const router = express.Router();
 const { check } = require('express-validator');
 const authController = require('../controller/authController');
 const authMiddleware = require('../middleware/authMiddleware');
-const adminController = require('../controller/adminController');
+const roleMiddleware = require('../middleware/roleMiddleware');
 
-// User routes
-router.get('/user', authMiddleware, authController.getUser);
+// Public Routes
 router.post(
   '/register',
   [
@@ -16,10 +15,8 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({
-      min: 6,
-    }),
+      'Please enter a password with 8–20 characters, including at least one letter and one number'
+    ).matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/),
   ],
   authController.register
 );
@@ -33,58 +30,43 @@ router.post(
   authController.login
 );
 
-router.put(
-  '/user',
-  authMiddleware,
-  [
-    check('firstName', 'First Name is required').not().isEmpty(),
-    check('lastName', 'Last Name is required').not().isEmpty(),
-    check('phone', 'Phone is required').not().isEmpty(),
-    check('email', 'Please include a valid email').isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({
-      min: 6,
-    }),
-  ],
-  authController.updateUser
-);
+// Protected Routes (User)
+router.get('/user', authMiddleware, authController.getUser);
+router.put('/user', authMiddleware, authController.updateUser);
 router.delete('/user', authMiddleware, authController.deleteUser);
 
-// Admin routes
+// Protected Routes (Admin)
 router.post(
   '/admin/register',
   authMiddleware,
+  roleMiddleware('admin'),
   [
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({
-      min: 6,
-    }),
+      'Please enter a password with 8–20 characters, including at least one letter and one number'
+    ).matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/),
   ],
-  authMiddleware,
-  adminController.register
+  authController.register
 );
 
-router.post('/admin/login', adminController.login);
-
+router.get(
+  '/admin/users',
+  authMiddleware,
+  roleMiddleware('admin'),
+  adminController.getUsers
+);
 router.put(
-  '/admin/user',
+  '/admin/users/:id',
   authMiddleware,
-  [
-    check('email', 'Please include a valid email').isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({
-      min: 6,
-    }),
-  ],
-  authMiddleware,
+  roleMiddleware('admin'),
   adminController.updateUser
 );
-router.delete('/admin/user', authMiddleware, adminController.deleteUser);
+router.delete(
+  '/admin/users/:id',
+  authMiddleware,
+  roleMiddleware('admin'),
+  adminController.deleteUser
+);
+
 module.exports = router;

@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const errorHandler = require('./middleware/errorMiddleware');
+const path = require('path');
+
 const app = express();
 
 require('dotenv').config();

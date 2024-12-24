@@ -15,7 +15,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     },
     role: {
       type: Schema.Types.ObjectId,
@@ -25,14 +25,17 @@ const UserSchema = new Schema(
     phone: {
       type: String,
       required: true,
-      pattern: /^[0-9]{10}$/,
+      match: /^[0-9]{10}$/,
     },
     password: {
       type: String,
       required: true,
-      pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-      min: 8,
-      max: 20,
+      minlength: 8,
+      maxlength: 20,
+    },
+    verified: {
+      type: Boolean,
+      default: false, // Tracks whether email/phone is verified
     },
   },
   { timestamps: true }

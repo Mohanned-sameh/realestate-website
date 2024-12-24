@@ -17,4 +17,7 @@ const FavouritesSchema = new Schema(
   { timestamps: true }
 );
 
+// Add a unique constraint for the user and property combination
+FavouritesSchema.index({ user: 1, property: 1 }, { unique: true });
+
 module.exports = Favourites = mongoose.model('favourites', FavouritesSchema);

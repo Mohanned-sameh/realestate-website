@@ -7,6 +7,9 @@ const RolesSchema = new Schema(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+    }, // Optional description of the role
   },
   { timestamps: true }
 );

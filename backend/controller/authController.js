@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Role = require('../models/Role');
 const jwt_secret = process.env.JWT_SECRET;
 const { validationResult } = require('express-validator');
 
@@ -15,17 +16,27 @@ exports.register = async (req, res) => {
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }
+    const role = await Role.findOne({ name: 'user' });
     user = new User({
       firstName,
       lastName,
       phone,
       email,
-      role: 'user',
+      password,
+      role: role._id,
     });
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
     await user.save();
-    res.status(200).json({ msg: 'User registered successfully' });
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+    jwt.sign(payload, jwt_secret, { expiresIn: 3600 }, (err, token) => {
+      if (err) throw err;
+      res.status(200).json({ token });
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

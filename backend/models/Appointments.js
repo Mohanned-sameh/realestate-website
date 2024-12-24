@@ -21,6 +21,11 @@ const AppointmentSchema = new Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ['pending', 'confirmed', 'canceled'],
+      default: 'pending',
+    },
   },
   { timestamps: true }
 );
