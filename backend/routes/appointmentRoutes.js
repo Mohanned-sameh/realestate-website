@@ -1,36 +1,20 @@
-const express = require('express');
-const appointmentController = require('../controllers/appointmentController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const adminMiddleware = require('../middlewares/adminMiddleware');
-const router = express.Router();
-
-router.get(
-  '/',
-  adminMiddleware,
+const router = require('express').Router();
+const {
+  createAppointment,
+  deleteAppointment,
+  getAppointments,
+  getAppointment,
+  updateAppointment,
+} = require('../controller/appointmentController');
+const {
   authMiddleware,
-  appointmentController.getAllAppointments
-);
-router.get(
-  '/:id',
   adminMiddleware,
-  authMiddleware,
-  appointmentController.getAppointment
-);
+} = require('../middleware/authMiddleware');
 
-router.post('/', authMiddleware, appointmentController.createAppointment);
-
-router.patch(
-  '/:id',
-  adminMiddleware,
-  authMiddleware,
-  appointmentController.updateAppointment
-);
-
-router.delete(
-  '/:id',
-  adminMiddleware,
-  authMiddleware,
-  appointmentController.deleteAppointment
-);
+router.post('/appointments', authMiddleware, createAppointment);
+router.get('/appointments', authMiddleware, adminMiddleware, getAppointments);
+router.get('/appointments/:id', authMiddleware, getAppointment);
+router.put('/appointments/:id', authMiddleware, updateAppointment);
+router.delete('/appointments/:id', authMiddleware, deleteAppointment);
 
 module.exports = router;

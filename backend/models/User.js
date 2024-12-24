@@ -16,6 +16,7 @@ const UserSchema = new Schema(
       required: true,
       unique: true,
       match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      lowercase: true,
     },
     role: {
       type: Schema.Types.ObjectId,
@@ -32,10 +33,6 @@ const UserSchema = new Schema(
       required: true,
       minlength: 8,
       maxlength: 20,
-    },
-    verified: {
-      type: Boolean,
-      default: false, // Tracks whether email/phone is verified
     },
   },
   { timestamps: true }

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const RolesSchema = new Schema(
   {
-    role: {
+    name: {
       type: String,
       required: true,
     },
